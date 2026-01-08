@@ -36,6 +36,10 @@ app.include_router(labels.router, prefix="/api/labels", tags=["labels"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
 
+@app.get("/")
+async def root():
+    return {"message": "Trello Clone API is running", "docs": "/api/docs"}
+
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok", "message": "Server is running"}
