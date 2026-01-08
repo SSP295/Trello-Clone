@@ -49,44 +49,37 @@ async def seed_database():
         # Create tables
         Base.metadata.create_all(bind=engine)
         
-        db = SessionLocal()
-        
-        # Check if data already exists
-        existing_board = db.query(models.Board).first()
-        if existing_board:
-            return {"message": "Database already seeded"}
-        
-        # Import and run seed logic
-        import sys
-        import os
-        sys.path.append(os.path.dirname(__file__))
-        
-        # Create sample board
-        board = models.Board(
-            title="My Project Board",
-            description="A sample project management board",
-            background="#0079bf"
-        )
-        db.add(board)
-        db.flush()
-        db.commit()
-        db.refresh(board)
-        
-        # Create sample lists
-        lists_data = [
-            {"title": "To Do", "position": 0},
-            {"title": "In Progress", "position": 1},
-            {"title": "Done", "position": 2},
-        ]
-        
-        for list_data in lists_data:
-            list_item = models.List(**list_data, board_id=board.id)
-            db.add(list_item)
-        
-        db.commit()
-        db.close()
-        
-        return {"message": "Database seeded successfully", "board_id": board.id}
+        # Use session context manager
+        with SessionLocal() as db:
+            # Check if data already exists
+            existing_board = db.query(models.Board).first()
+            if existing_board:
+                return {"message": "Database already seeded"}
+            
+            # Create sample board
+            board = models.Board(
+                title="My Project Board",
+                description="A sample project management board",
+                background="#0079bf"
+            )
+            db.add(board)
+            db.commit()
+            db.refresh(board)
+            
+            # Create sample lists
+            lists_data = [
+                {"title": "To Do", "position": 0},
+                {"title": "In Progress", "position": 1},
+                {"title": "Done", "position": 2},
+            ]
+            
+            for list_data in lists_data:
+                list_item = models.List(**list_data, board_id=board.id)
+                db.add(list_item)
+            
+            db.commit()
+            
+            return {"message": "Database seeded successfully", "board_id": board.id}
         
     except Exception as e:
         return {"error": str(e)}
