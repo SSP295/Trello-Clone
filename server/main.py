@@ -36,7 +36,7 @@ app.include_router(search.router, prefix="/api/search", tags=["search"])
 async def health_check():
     return {"status": "ok", "message": "Server is running"}
 
-@app.post("/api/seed")
+@app.get("/api/seed")
 async def seed_database():
     try:
         from app.database import SessionLocal, engine, Base
