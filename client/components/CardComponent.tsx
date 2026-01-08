@@ -12,14 +12,15 @@ interface CardComponentProps {
 }
 
 export default function CardComponent({ card, onClick }: CardComponentProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: card.id,
-    data: {
-      type: 'card',
-      card,
-      listId: card.listId,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({
+      id: card.id,
+      data: {
+        type: 'card',
+        card,
+        listId: card.listId,
+      },
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -28,8 +29,22 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
   };
 
   const isOverdue = card.dueDate && new Date(card.dueDate) < new Date();
-  const labels = card.labels || [];
-  const members = card.members || [];
+  const labels = card.labels ?? [];
+  const members = card.members ?? [];
+  const checklists = card.checklists ?? [];
+
+  // ✅ SAFE CHECKLIST COUNTS
+  const completedChecklistItems = checklists.reduce(
+    (acc, checklist) =>
+      acc + (checklist.items?.filter(item => item.isCompleted).length ?? 0),
+    0
+  );
+
+  const totalChecklistItems = checklists.reduce(
+    (acc, checklist) =>
+      acc + (checklist.items?.length ?? 0),
+    0
+  );
 
   return (
     <div
@@ -40,6 +55,7 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
       onClick={onClick}
       className="bg-white rounded p-2 shadow-sm hover:shadow-lg cursor-pointer transition-all duration-200 hover-lift group animate-fadeIn"
     >
+      {/* COVER IMAGE */}
       {card.coverImage && (
         <div
           className="w-full h-32 rounded mb-2 bg-cover bg-center"
@@ -47,6 +63,7 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
         />
       )}
 
+      {/* LABELS */}
       {labels.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
           {labels.map((cardLabel) => (
@@ -60,9 +77,14 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
         </div>
       )}
 
-      <div className="text-sm font-medium text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200">{card.title}</div>
+      {/* TITLE */}
+      <div className="text-sm font-medium text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200">
+        {card.title}
+      </div>
 
+      {/* META INFO */}
       <div className="flex items-center gap-2 text-xs text-gray-500">
+        {/* DUE DATE */}
         {card.dueDate && (
           <div className={`flex items-center gap-1 ${isOverdue ? 'text-red-600' : ''}`}>
             <FiClock size={12} />
@@ -70,6 +92,7 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
           </div>
         )}
 
+        {/* MEMBERS */}
         {members.length > 0 && (
           <div className="flex items-center gap-1">
             <FiUser size={12} />
@@ -77,21 +100,16 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
           </div>
         )}
 
-        {card.checklists && card.checklists.length > 0 && (
+        {/* CHECKLIST */}
+        {totalChecklistItems > 0 && (
           <div className="flex items-center gap-1">
             <span>
-              {card.checklists.reduce(
-                (acc, checklist) =>
-                  acc +
-                  (checklist.items?.filter((item) => item.isCompleted).length || 0) +
-                  '/' +
-                  (checklist.items?.length || 0),
-                0
-              )}
+              {completedChecklistItems}/{totalChecklistItems}
             </span>
           </div>
         )}
 
+        {/* ATTACHMENTS */}
         {card.attachments && card.attachments.length > 0 && (
           <div className="flex items-center gap-1">
             <span>📎 {card.attachments.length}</span>
