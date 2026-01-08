@@ -17,7 +17,7 @@ app = FastAPI(title="Trello Clone API", version="1.0.0")
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "https://your-frontend-url.vercel.app"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "https://trello-clone-frontend-one.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
