@@ -17,6 +17,6 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://trello-clone-backend-8wpo.onrender.com/api"
+    "NEXT_PUBLIC_API_URL": "https://trello-clone-backend.onrender.com/api"
   }
 }
