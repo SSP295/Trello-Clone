@@ -43,3 +43,4 @@ server/uploads/*
 
 # Prisma
 server/prisma/migrations/
+.vercel

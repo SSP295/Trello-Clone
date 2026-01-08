@@ -13,7 +13,7 @@ app = FastAPI(title="Trello Clone API", version="1.0.0")
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "https://your-frontend-url.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,6 +35,56 @@ app.include_router(search.router, prefix="/api/search", tags=["search"])
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok", "message": "Server is running"}
+
+@app.post("/api/seed")
+async def seed_database():
+    try:
+        from app.database import SessionLocal, engine, Base
+        from app import models
+        
+        # Create tables
+        Base.metadata.create_all(bind=engine)
+        
+        db = SessionLocal()
+        
+        # Check if data already exists
+        existing_board = db.query(models.Board).first()
+        if existing_board:
+            return {"message": "Database already seeded"}
+        
+        # Import and run seed logic
+        import sys
+        import os
+        sys.path.append(os.path.dirname(__file__))
+        
+        # Create sample board
+        board = models.Board(
+            title="My Project Board",
+            description="A sample project management board",
+            background="#0079bf"
+        )
+        db.add(board)
+        db.commit()
+        db.refresh(board)
+        
+        # Create sample lists
+        lists_data = [
+            {"title": "To Do", "position": 0},
+            {"title": "In Progress", "position": 1},
+            {"title": "Done", "position": 2},
+        ]
+        
+        for list_data in lists_data:
+            list_item = models.List(**list_data, board_id=board.id)
+            db.add(list_item)
+        
+        db.commit()
+        db.close()
+        
+        return {"message": "Database seeded successfully", "board_id": board.id}
+        
+    except Exception as e:
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
