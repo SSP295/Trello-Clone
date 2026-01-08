@@ -68,6 +68,7 @@ async def seed_database():
             background="#0079bf"
         )
         db.add(board)
+        db.flush()
         db.commit()
         db.refresh(board)
         

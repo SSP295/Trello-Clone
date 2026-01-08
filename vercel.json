@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "https://trello-clone-backend-nu.vercel.app/api/$1"
+      "dest": "https://trello-clone-backend-8wpo.onrender.com/api/$1"
     },
     {
       "src": "/(.*)",
@@ -17,6 +17,6 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://trello-clone-backend-nu.vercel.app/api"
+    "NEXT_PUBLIC_API_URL": "https://trello-clone-backend-8wpo.onrender.com/api"
   }
 }
