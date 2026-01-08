@@ -13,7 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "https://trello-clone-backend-8wpo.onrender.com/"
+      "dest": "client/$1"
     }
   ],
   "env": {
