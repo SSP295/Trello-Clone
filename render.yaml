@@ -1,0 +1,4 @@
+web: python server/main.py
+runtime: python
+buildCommand: pip install -r server/requirements.txt
+PYTHON_VERSION: 3.9.16
