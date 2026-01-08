@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FiClock, FiUser } from 'react-icons/fi';
+import { FiClock, FiUser, FiCheckSquare } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { Card } from '@/types';
 
@@ -103,6 +103,7 @@ export default function CardComponent({ card, onClick }: CardComponentProps) {
         {/* CHECKLIST */}
         {totalChecklistItems > 0 && (
           <div className="flex items-center gap-1">
+            <FiCheckSquare size={12} />
             <span>
               {completedChecklistItems}/{totalChecklistItems}
             </span>
